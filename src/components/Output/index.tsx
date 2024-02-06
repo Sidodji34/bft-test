@@ -5,7 +5,7 @@ type TOutput = {
   residence: string;
 };
 
-function Output(selections: TOutput) {
+const Output: React.FC<TOutput> = (selections) => {
   return (
     <footer className='form-footer'>
       <span className='form-footer-title'>Вы выбрали:</span>
@@ -17,6 +17,6 @@ function Output(selections: TOutput) {
       </ul>
     </footer>
   );
-}
+};
 
 export default Output;

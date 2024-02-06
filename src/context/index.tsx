@@ -1,6 +1,5 @@
 import { createContext, ReactNode, useState, useContext } from 'react';
 import { TData } from '../data/data';
-import { getCountries } from '../utils';
 
 type TForm = {
   country: string;
@@ -13,7 +12,6 @@ type TForm = {
 type TFormContext = {
   options: TData;
   setOptions: React.Dispatch<React.SetStateAction<TData>>;
-  countries: string[];
   formValue: TForm;
   setFormValue: React.Dispatch<React.SetStateAction<TForm>>;
   outputEnabled: boolean;
@@ -23,7 +21,6 @@ type TFormContext = {
 const FormContext = createContext<TFormContext | null>(null);
 
 function FormProvider({ children }: { children: ReactNode }) {
-  const [countries] = useState<string[]>(getCountries);
   const [options, setOptions] = useState<TData>({
     country: '',
     cities: [],
@@ -43,7 +40,6 @@ function FormProvider({ children }: { children: ReactNode }) {
       value={{
         options,
         setOptions,
-        countries,
         formValue,
         setFormValue,
         outputEnabled,

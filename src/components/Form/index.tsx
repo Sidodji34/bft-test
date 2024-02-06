@@ -1,22 +1,18 @@
+import { useState } from 'react';
 import { useFormContext } from '../../context/index';
 import SelectForm from '../SelectForm';
 import Output from '../Output';
-import { getValues } from '../../utils';
+import { getValues, getCountries } from '../../utils/getSortData';
+import { selectTitle, dataPropertyKeys } from '../../utils/constants';
 
-function Form() {
-  const {
-    options,
-    setOptions,
-    countries,
-    formValue,
-    setFormValue,
-    outputEnabled,
-    setOutputEnabled,
-  } = useFormContext();
+const Form: React.FC = () => {
+  const [countries] = useState<string[]>(getCountries);
+  const { options, setOptions, formValue, setFormValue, outputEnabled, setOutputEnabled } =
+    useFormContext();
 
-  function handleSelect(event: React.ChangeEvent<HTMLSelectElement>, objectKey: string) {
+  const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>, objectKey: string) => {
     const isSelectedValue = event.target.value;
-    if (objectKey === 'country') {
+    if (objectKey === dataPropertyKeys.country) {
       setOptions({ ...options, ...getValues(isSelectedValue) });
       setFormValue({
         ...formValue,
@@ -25,45 +21,46 @@ function Form() {
         university: '',
         residence: '',
       });
+      setOutputEnabled(false);
     } else {
       setFormValue({ ...formValue, [objectKey]: isSelectedValue });
     }
-  }
+  };
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setOutputEnabled(true);
-  }
+  };
 
   return (
     <>
-      <form className='form-body' onSubmit={(e) => handleSubmit(e)}>
+      <form className='form-body' onSubmit={(event) => handleSubmit(event)}>
         <div className='content'>
           <SelectForm
-            title='Выбор страны'
-            objectKey='country'
-            isSelectEnabled='enabled'
+            title={selectTitle.country}
+            objectKey={dataPropertyKeys.country}
+            isSelectEnabled={true}
             options={countries}
             handleSelect={handleSelect}
           />
           <SelectForm
-            title='Выбор города'
-            objectKey='city'
-            isSelectEnabled={formValue.country}
+            title={selectTitle.city}
+            objectKey={dataPropertyKeys.city}
+            isSelectEnabled={Boolean(formValue.country)}
             options={options.cities}
             handleSelect={handleSelect}
           />
           <SelectForm
-            title='Выбор ВУЗа'
-            objectKey='university'
-            isSelectEnabled={formValue.city}
+            title={selectTitle.university}
+            objectKey={dataPropertyKeys.university}
+            isSelectEnabled={Boolean(formValue.city)}
             options={options.university}
             handleSelect={handleSelect}
           />
           <SelectForm
-            title='Вариант проживания'
-            objectKey='residence'
-            isSelectEnabled={formValue.university}
+            title={selectTitle.residence}
+            objectKey={dataPropertyKeys.residence}
+            isSelectEnabled={Boolean(formValue.university)}
             options={options.residence}
             handleSelect={handleSelect}
           />
@@ -75,6 +72,6 @@ function Form() {
       </form>
     </>
   );
-}
+};
 
 export default Form;

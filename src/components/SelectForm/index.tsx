@@ -1,27 +1,33 @@
 import { useFormContext } from '../../context';
+import { dataPropertyKeys } from '../../utils/constants';
 
 type TSelectForm = {
   title: string;
   options: string[];
   objectKey: string;
-  isSelectEnabled: string;
+  isSelectEnabled: boolean;
   handleSelect: (event: React.ChangeEvent<HTMLSelectElement>, objectKey: string) => void;
 };
 
-function SelectForm({ title, objectKey, options, isSelectEnabled, handleSelect }: TSelectForm) {
+const SelectForm: React.FC<TSelectForm> = ({
+  title,
+  objectKey,
+  options,
+  isSelectEnabled,
+  handleSelect,
+}) => {
   const { formValue, setFormValue, setOutputEnabled } = useFormContext();
 
   const handleRemoveSelect = (objectKey: string) => {
     let updatedValues: Record<string, string> = {};
-
     switch (objectKey) {
-      case 'city':
+      case dataPropertyKeys.city:
         updatedValues = { city: '', university: '', residence: '' };
         break;
-      case 'university':
+      case dataPropertyKeys.university:
         updatedValues = { university: '', residence: '' };
         break;
-      case 'residence':
+      case dataPropertyKeys.residence:
         updatedValues = { residence: '' };
         break;
       default:
@@ -43,8 +49,8 @@ function SelectForm({ title, objectKey, options, isSelectEnabled, handleSelect }
           id={objectKey}
           value={formValue[objectKey]}
           onChange={(e) => handleSelect(e, objectKey)}
-          disabled={Boolean(!isSelectEnabled)}>
-          <option value='' hidden></option>
+          disabled={!isSelectEnabled}>
+          <option defaultValue='' hidden></option>
           {options.map((item, index) => (
             <option key={index}>{item}</option>
           ))}
@@ -58,6 +64,6 @@ function SelectForm({ title, objectKey, options, isSelectEnabled, handleSelect }
       </button>
     </div>
   );
-}
+};
 
 export default SelectForm;
